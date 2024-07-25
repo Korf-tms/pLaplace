@@ -1,3 +1,4 @@
 *.msh
 *.xdmf
 *.h5
+.idea/*
