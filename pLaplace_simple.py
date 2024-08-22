@@ -15,7 +15,7 @@ from basix.ufl import element
 import pyvista
 
 
-def pLaplace_zero_dirichlet(mesh, p, element_type="Lagrange", order=1):
+def pLaplace_zero_dirichlet(mesh, p, element_type="Lagrange", order=1, rhs=None):
     x = ufl.SpatialCoordinate(mesh)
 
     P_n = element(element_type, mesh.basix_cell(), order)
@@ -32,7 +32,10 @@ def pLaplace_zero_dirichlet(mesh, p, element_type="Lagrange", order=1):
     # energy functional for pLaplace
     E = 1.0 / p * inner(grad(u), grad(u)) ** (p / 2.0) * dx
     # TODO: custom rhs as input parameter?
-    E += - 10*ufl.sin(x[0]*x[1]) * u * dx
+    if rhs is not None:
+        E += - rhs * u * dx
+    else:
+        E += - 100*ufl.sin(x[0]*x[1]) * u * dx
 
     F = ufl.derivative(E, u)
     J = ufl.derivative(F, u)
